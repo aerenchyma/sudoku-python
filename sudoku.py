@@ -1,20 +1,35 @@
-
+# SUDOKU
 
 BOARD_N = 3
 BOARD_SIZE = BOARD_N * BOARD_N
-# colors later -- Tkinter??
+# colors later -- Tkinter? pyGame?
 
 class Board(object):
 	def __init__(self, filename):
 		self.filename = filename
 		self.boardfile = open(filename, 'r')
-		self.board,self.orig = self.load_board() # self.board is the changeable one
+		self.board,self.orig = self.load_board() # self.board is the changeable one. self.load_board() returns a tuple
 		self.prevmoves = [] # list of tuples (row, col, valfrom, valto)
 	
 	def __str__(self):
-		s = ''
+		sp = '  ' 
+		s = "  "
+		digits = range(0,9)
+		s += sp
+		for n in digits:
+			s += str(n)+ sp
+		s += '\n'
+		s += sp*2
+		for n in digits:
+			s += "_" + sp
+		s += '\n'
+		count = 0
 		for l in self.board:
-			s += str(l)+'\n'
+			s += str(digits[count]) + " | "
+			for item in l:
+				s += str(item)+ sp
+			s += '\n'
+			count += 1
 		return s
 	
 	def load_board(self):
@@ -27,10 +42,8 @@ class Board(object):
 	def make_move(self,row,column,value):
 		if self.orig[row][column]:
 			#print self.orig
-			print "not valid -- ln 31"
 			return False
 		if self.valid_move(value, (row,column)):
-			print "checking ln 36"
 			origval = self.board[row][column] # saving what it was
 			self.prevmoves.append((row, column, origval, value))
 			self.board[row][column] = value
@@ -38,10 +51,10 @@ class Board(object):
 		return False
 	 
 	def valid_move(self, value, rowcol):
-		print "entering valid move"
+		#print "entering valid move"
 		#from pudb import set_trace; set_trace()
 		row, col = rowcol
-		print 'changing to ',value, 'at', rowcol
+		#print 'changing to ',value, 'at', rowcol
 		if value == 0:
 			print "checking 47"
 			return True
@@ -49,7 +62,7 @@ class Board(object):
 			return False
 		if value in [self.board[x][col] for x in range(BOARD_SIZE)]:
 			return False
-		top = (row//3) * 3 # integer division of row//3, mult by 3 to find top row of minisquare
+		top = (row//3) * 3 # integer division of row//3, mult by 3 to find top row of minisquare (the 3x3 squares)
 		left = (col//3) * 3 # same deal
 		indices = [(r,c) for r in range(top,top+3) for c in range(left,left+3)]
 		vals = [self.board[r][c] for (r,c) in indices]
@@ -65,46 +78,73 @@ class Board(object):
 # test fxns
 
 def solver(board):
-	nb = solve(0,0, board)
+	"""Returns True if solves board, else False"""
+	print board.orig
+	print board.board
+	for c in range(BOARD_SIZE):
+		for r in range(BOARD_SIZE):
+			assert bool(board.orig[r][c]) == bool(board.board[r][c])
+	# Asserts that every filled-in square is a permanent square
+	
+	r, c = 0, 0
+	if board.check_win():
+		return True
+	while is_permanent(r, c, board):
+		r, c = get_next(r, c, board)
+	nb = solve(r,c,board)
 	print nb
 	print board
 
 def solve(r,c, board):
-		# this needs to check whether permanent
-	#if board.orig[r][c]:
+	print board
 	for n in range(1,10):
-		print 'trying', n, 'at', r, c
 		if board.make_move(r,c,n):
-			if c == 8: # this should be its own fxn
-				nc = 0
-				nr = r + 1
-				if nr == 9:
-					print "Congratulatory message"
-					return True
-			else:
-				nc = c + 1
-				nr = r
+			if board.check_win():
+				print "Congratulatory message"
+				return True
+			nr, nc = get_next(r, c, board)
+			while is_permanent(nr, nc, board):
+				nr, nc = get_next(nr, nc, board)
 			x = solve(nr,nc,board)
 			if x:
 				return True
+	board.board[r][c] = 0
 	return False
-				
+
+def is_permanent(r, c, board):
+	return board.orig[r][c]
+
+def is_changeable(r, c, board):
+	return not board.orig[r][c]	
+
+def get_next(r,c,board):
+	#TODO fix for board size 
+	if c == 8:
+		nc = 0
+		nr = r + 1
+		if nr == 9:
+			nc, nr = 0,0
+	else:
+		nc = c + 1
+		nr = r
+	return nr, nc
+	
+		
+
 
 
 def test():
-	newboard = Board("sudoku_board_1.txt")
-	completeboard = Board("board_full.txt")
+	# creating/loading sudoku boards
+	newboard = Board("sudoku_board_1.txt") # to play
+	completeboard = Board("board_full.txt") # should be a winning board
 	print newboard
 
 	assert newboard.make_move(0,0,6)
 	assert not newboard.make_move(0,0,1)
-	
 	assert newboard.board[0][0] == 6
-	
 	assert newboard.make_move(1,4,6)
-	
 	assert newboard.make_move(0,0,0)
-	
+	assert not newboard.check_win()
 	assert completeboard.check_win()
 	
 	
