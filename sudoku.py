@@ -10,6 +10,7 @@ class Board(object):
 		self.boardfile = open(filename, 'r')
 		self.board,self.orig = self.load_board() # self.board is the changeable one. self.load_board() returns a tuple
 		self.prevmoves = [] # list of tuples (row, col, valfrom, valto)
+		#TODO: undo?
 	
 	def __str__(self):
 		sp = '  ' 
@@ -31,6 +32,61 @@ class Board(object):
 			s += '\n'
 			count += 1
 		return s
+	
+	# trying to format string output more prettily
+	def fakestr(self):
+		# # print the numbers at the top of the board
+		# 	s = ' '
+		# 	for y in range(BOARD_SIZE):
+		# 		if y < BOARD_SIZE - 1:
+		# 			s += "| " + str(y+1) + " "
+		# 		else:
+		# 			s += "| " + str(y+1)
+		# 	s += "|\n"
+		# 	
+		# 	for x in range(BOARD_SIZE):
+		# 		s += '-'
+		# 		# print a line above the cell
+		# 		for n in range(BOARD_SIZE):
+		# 			if x % BOARD_N == 0:
+		# 				s += "+---"
+		# 			else:
+		# 				# if n % BOARD_N == 0:
+		# 				# 						s += "+"
+		# 				# 					else:
+		# 				# 						s+= "+"
+		# 				s += "+"
+		# 				s += "---"
+		# 	
+		# 			s += '+' + "-" + '\n'
+		# 			s += str(x + 1)
+		# 			
+		# 			# print the contents of the cell (is this at the correct indentation?)
+		# 			for y in range(BOARD_SIZE):
+		# 				if y % BOARD_N == 0:
+		# 					s += "|"
+		# 				else:
+		# 					s+= "|" # this is diff just for color but whatever
+		# 				# checking for permanence, also for blanks.. this may or may not work
+		# 				if self.orig[x][y]:
+		# 					s += ' '
+		# 				else:
+		# 					s += ' '
+		# 					if self.board[x][y] == 0:
+		# 						s += ' '
+		# 					else:
+		# 						s += str(self.board[x][y])
+		# 			s += "|" + str(x+1) + '\n'
+		# 		s += "-"
+		# 		
+		# 		# print final line
+		# 		s += " "
+		# 		for y in range(BOARD_SIZE):
+		# 			s += "+---"
+		# 		s+= "+" + "-" + '\n'
+		# 		return s
+		return None
+	
 	
 	def load_board(self):
 		s = self.boardfile.read()
@@ -64,7 +120,7 @@ class Board(object):
 			return False
 		top = (row//3) * 3 # integer division of row//3, mult by 3 to find top row of minisquare (the 3x3 squares)
 		left = (col//3) * 3 # same deal
-		indices = [(r,c) for r in range(top,top+3) for c in range(left,left+3)]
+		indices = [(r,c) for r in range(top,top+BOARD_N) for c in range(left,left+BOARD_N)]
 		vals = [self.board[r][c] for (r,c) in indices]
 		if value in vals:
 			return False
@@ -128,8 +184,6 @@ def get_next(r,c,board):
 		nc = c + 1
 		nr = r
 	return nr, nc
-	
-		
 
 
 
@@ -138,7 +192,7 @@ def test():
 	newboard = Board("sudoku_board_1.txt") # to play
 	completeboard = Board("board_full.txt") # should be a winning board
 	print newboard
-
+	# assertions
 	assert newboard.make_move(0,0,6)
 	assert not newboard.make_move(0,0,1)
 	assert newboard.board[0][0] == 6
@@ -156,5 +210,5 @@ if __name__ == "__main__":
 	
 #	test()
 	
-	testsolve = Board("sudoku_board_1.txt")
+	testsolve = Board("sudoku_board_1.txt") 
 	solver(testsolve)
