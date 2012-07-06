@@ -75,9 +75,14 @@ class Board(object):
 		
 	def undo(self): # can undo ONLY the last move -- the undo then becomes the previous move 
 	## poss.TODO: implement continuous undo?
-		xr, xc = (self.prevmoves[-1][0], self.prevmoves[-1][1])
-		xv = self.prevmoves[-1][2]
-		if self.make_move(xr,xc,xv):
+	## TODO: can't undo after trying to solve an unsolveable board, which is a problem
+		if self.prevmoves != []:
+			xr, xc = (self.prevmoves[-1][0], self.prevmoves[-1][1])
+			xv = self.prevmoves[-1][2]
+			if self.make_move(xr,xc,xv):
+				return True
+		else:
+			print "Sorry, you haven't made any moves yet. Try something else."
 			return True
 		#self.board[xr][xc] = self.prevmoves[-1][2]
 		return False # should never happen
@@ -96,10 +101,8 @@ class Board(object):
 
 # test fxns
 
-def solver(board):
+def solver(board): 
 	"""Returns True if solves board, else False"""
-	print board.orig
-	print board.board
 	for c in range(BOARD_SIZE):
 		for r in range(BOARD_SIZE):
 			assert bool(board.orig[r][c]) == bool(board.board[r][c]) 
@@ -115,11 +118,11 @@ def solver(board):
 	return nb
 
 def solve(r,c, board):
-	print board
+	#print board
 	for n in range(1,10):
 		if board.make_move(r,c,n):
 			if board.check_win():
-				print "Congratulatory message"
+				#print "Congratulatory message"
 				return True
 			nr, nc = get_next(r, c, board)
 			while is_permanent(nr, nc, board):

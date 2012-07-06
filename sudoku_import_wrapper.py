@@ -6,10 +6,8 @@ def print_dirs():
 	s = """_________ SUDOKU __________\n
 	(P)lay Game\n
 	(U)ndo last move (can ONLY undo the immediately previous move)\n
-	(S)olve game -- solves board at current state\n
-	(Q)uit game -- ends game and quits program\n
-	(H)elp -- prints these directions again\n"""
-	return s 
+	(S)olve game -- solves board at current state\n"""
+	return s  #TODO: add help and quit
 	
 def get_coords(): 
 	placeval = raw_input("Enter x-coord, y-coord, value to place, separated by commas..\nE.g. 2,3,7.\n")
@@ -55,7 +53,7 @@ def play_game(board, command):
 		if rcv_tuple == None: 
 			board.fix_board_state()
 			if sudoku.solver(board):
-					print "You won!"
+					print "Congratulatory message"
 			else:
 				print "This board is unsolveable. Try again!" # unsolveable at current state.
 		elif rcv_tuple == '0':
