@@ -10,8 +10,7 @@ class Board(object):
 		self.boardfile = open(filename, 'r')
 		self.board,self.orig = self.load_board() # self.board is the changeable one. self.load_board() returns a tuple
 		self.prevmoves = [] # list of tuples (row, col, valfrom, valto)
-		self.error = None
-		#TODO: undo?
+		self.error = None # for keeping track of why a move is invalid
 	
 	def __str__(self): # TODO: format more clearly
 		sp = '  ' 
