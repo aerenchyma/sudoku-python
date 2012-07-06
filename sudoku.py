@@ -99,7 +99,7 @@ class Board(object):
 			return False
 		return True
 
-# test fxns
+# solver fxns
 
 def solver(board): 
 	"""Returns True if solves board, else False"""
@@ -122,7 +122,6 @@ def solve(r,c, board):
 	for n in range(1,10):
 		if board.make_move(r,c,n):
 			if board.check_win():
-				#print "Congratulatory message"
 				return True
 			nr, nc = get_next(r, c, board)
 			while is_permanent(nr, nc, board):
