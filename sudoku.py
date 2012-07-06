@@ -15,7 +15,7 @@ class Board(object):
 	def __str__(self):
 		sp = '  ' 
 		s = "  "
-		digits = range(0,9)
+		digits = range(1,10)
 		s += sp
 		for n in digits:
 			s += str(n)+ sp
@@ -110,9 +110,9 @@ class Board(object):
 		#print "entering valid move"
 		#from pudb import set_trace; set_trace()
 		row, col = rowcol
-		#print 'changing to ',value, 'at', rowcol
+		print 'changing to ',value, 'at', rowcol
 		if value == 0:
-			print "checking 47"
+			#print "checking 47"
 			return True
 		if value in self.board[row]:
 			return False
@@ -125,6 +125,25 @@ class Board(object):
 		if value in vals:
 			return False
 		return True
+		
+	def undo(self): # can undo ONLY the last move -- the undo then becomes the previous move ## poss.TODO: implement continuous undo?
+		xr, xc = (self.prevmoves[-1][0], self.prevmoves[-1][1])
+		xv = self.prevmoves[-1][2]
+		if self.make_move(xr,xc,xv):
+			return True
+		#self.board[xr][xc] = self.prevmoves[-1][2]
+		return False # should never happen
+	
+	# def fix_board_state(self): # for solving-at-state. TODO: needs testing
+	# 	# want: all the places in the board that don't have a 0 value in the BOARD so that those can be made permanent
+	# 
+	# 
+	# 	#places = [(r,c) if self.board[r][c] is not 0 for self.board[r][c] in self.board]
+	# 	#print places # for testing
+	# 	for r,c in places:
+	# 		self.orig[r][c] = True
+	# 	return None
+
 
 	def check_win(self):
 		if any(0 in row for row in self.board):
@@ -139,7 +158,7 @@ def solver(board):
 	print board.board
 	for c in range(BOARD_SIZE):
 		for r in range(BOARD_SIZE):
-			assert bool(board.orig[r][c]) == bool(board.board[r][c])
+			assert bool(board.orig[r][c]) == bool(board.board[r][c]) ##TODO: WHY THROWING ASSERTION ERROR
 	# Asserts that every filled-in square is a permanent square
 	
 	r, c = 0, 0
@@ -192,11 +211,21 @@ def test():
 	newboard = Board("sudoku_board_1.txt") # to play
 	completeboard = Board("board_full.txt") # should be a winning board
 	print newboard
-	# assertions
+	newboard.make_move(0,0,7)
+	print newboard
+	# newboard.undo()
+	# print newboard
+	# newboard.undo()
+	# print newboard
+	# newboard.undo()
+	# print newboard
+	
+	## assertions
 	assert newboard.make_move(0,0,6)
 	assert not newboard.make_move(0,0,1)
 	assert newboard.board[0][0] == 6
 	assert newboard.make_move(1,4,6)
+	print newboard
 	assert newboard.make_move(0,0,0)
 	assert not newboard.check_win()
 	assert completeboard.check_win()
@@ -208,7 +237,7 @@ def test():
 
 if __name__ == "__main__":
 	
-#	test()
+	test()
 	
-	testsolve = Board("sudoku_board_1.txt") 
-	solver(testsolve)
+	# testsolve = Board("sudoku_board_1.txt") 
+	# solver(testsolve)
