@@ -83,20 +83,12 @@ class Board(object):
 		#self.board[xr][xc] = self.prevmoves[-1][2]
 		return False # should never happen
 	
-	def fix_board_state(self): # for solving-at-state. TODO: needs testing
-			# want: all the places in the board that don't have a 0 value in the BOARD so that those can be made permanent
+	def fix_board_state(self): # for solving-at-state.
 			for r in range(BOARD_SIZE):
 				for c in range(BOARD_SIZE):
 					if self.board[r][c]:
 						if not self.orig[r][c]: 
 							self.orig[r][c] = True
-		
-			#places = [(r,c) if self.board[r][c] is not 0 for self.board[r][c] in self.board]
-			#print places # for testing
-			# for r,c in places:
-			# 			self.orig[r][c] = True
-			# 		return None
-
 
 	def check_win(self):
 		if any(0 in row for row in self.board):
