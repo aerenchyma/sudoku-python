@@ -62,13 +62,13 @@ class Board(object):
 			self.error = "InvalidColumn"
 			return False
 		top = (row//3) * 3 # integer division of row//3, mult by 3 to find top row of minisquare (the 3x3 squares)
-		left = (col//3) * 3 # same deal
+		left = (col//3) * 3 # find furthest left, same deal
 		indices = [(r,c) for r in range(top,top+BOARD_N) for c in range(left,left+BOARD_N)]
 		vals = [self.board[r][c] for (r,c) in indices]
 		if value in vals:
 			self.error = "InvalidSquare"
 			return False
-		if is_permanent(rowcol[0],rowcol[1], self): # did we take care of this elsewhere? this maybe needed for error problems
+		if is_permanent(rowcol[0],rowcol[1], self): 
 			self.error = "Not alterable" 
 			return False
 		return True
