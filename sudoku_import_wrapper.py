@@ -1,3 +1,6 @@
+# command line interface for sudoku
+# Jackie Cohen
+
 import sudoku
 
 # functions

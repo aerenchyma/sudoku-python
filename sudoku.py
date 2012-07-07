@@ -73,8 +73,8 @@ class Board(object):
 			return False
 		return True
 		
-	def undo(self): # can undo ONLY the last move -- the undo then becomes the previous move 
-	## poss.TODO: implement continuous undo?
+	def undo(self): # can undo only the last move (currently the undo then becomes the previous move) 
+	## poss.TODO: implement continuous undo
 	## TODO: can't undo after trying to solve an unsolveable board, which is a problem
 		if self.prevmoves != []:
 			xr, xc = (self.prevmoves[-1][0], self.prevmoves[-1][1])
@@ -87,7 +87,7 @@ class Board(object):
 		#self.board[xr][xc] = self.prevmoves[-1][2]
 		return False # should never happen
 	
-	def fix_board_state(self): # for solving-at-state.
+	def fix_board_state(self): # for solving-at-state. TODO: adjustments
 			for r in range(BOARD_SIZE):
 				for c in range(BOARD_SIZE):
 					if self.board[r][c]:
@@ -107,7 +107,6 @@ def solver(board):
 		for r in range(BOARD_SIZE):
 			assert bool(board.orig[r][c]) == bool(board.board[r][c]) 
 	# Asserts that every filled-in square is a permanent square
-	
 	r, c = 0, 0
 	if board.check_win():
 		return True
@@ -118,7 +117,6 @@ def solver(board):
 	return nb
 
 def solve(r,c, board):
-	#print board
 	for n in range(1,10):
 		if board.make_move(r,c,n):
 			if board.check_win():
