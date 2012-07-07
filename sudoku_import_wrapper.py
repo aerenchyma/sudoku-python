@@ -17,7 +17,7 @@ def get_coords():
 	if placeval.upper() == 'S':
 		return None # check
 	elif placeval.upper() == 'U':
-		return '0' # another check -- STRING 0
+		return '0' # another check 
 	elif placeval.upper() == 'Q':
 		return '1'
 	elif len(placeval.split(",")) == 3:
@@ -53,13 +53,14 @@ def play_game(board, command):
 		print_dirs()
 		rcv_tuple = get_coords()
 		if rcv_tuple == None: 
-			board.fix_board_state()
+			#board.fix_board_state()
 			if sudoku.solver(board):
 					print "Congratulatory message"
 			else:
 				print "This board is unsolveable. Try again!" # unsolveable at current state.
 		elif rcv_tuple == '0':
-				board.undo()
+			board.undo()
+			print board
 		elif rcv_tuple == '1': # TODO: fix haaaaackyness
 			break
 		else:
@@ -72,7 +73,7 @@ def play_game(board, command):
 # main fxn loop
 def main():
 	print "Welcome to Sudoku.\n"
-	boards = ["peboards/peboard%s.txt" % str(x) for x in range(2,51)] # given the split of the boards I have in this file
+	boards = ["setof_peboards/peboard%s.txt" % str(x) for x in range(2,51)] # given the split of the boards I have in this file
 	r = random.choice(boards)
 	game_board = sudoku.Board(r)
 	command = raw_input(print_dirs()).upper()
