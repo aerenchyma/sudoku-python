@@ -1,7 +1,7 @@
 # command line interface for sudoku
-# Jackie Cohen
 
 import sudoku
+import random
 
 # functions
 
@@ -48,7 +48,6 @@ def print_board(board):
 	print board
 		
 def play_game(board, command):
-
 	print board
 	while not board.check_win():
 		print_dirs()
@@ -73,7 +72,9 @@ def play_game(board, command):
 # main fxn loop
 def main():
 	print "Welcome to Sudoku.\n"
-	game_board = sudoku.Board("sudoku_board_1.txt")
+	boards = ["peboard%s.txt" % str(x) for x in range(2,51)] # given the split of the boards I have in this file
+	r = random.choice(boards)
+	game_board = sudoku.Board(r)
 	command = raw_input(print_dirs()).upper()
 	play_game(game_board,command)
 	while not game_board.check_win():

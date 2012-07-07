@@ -24,7 +24,8 @@ class Board(object):
 		for n in digits:
 			s += "_" + sp
 		s += '\n'
-		count = 0
+		count = 0 
+		#from pudb import set_trace ; set_trace()
 		for l in self.board:
 			s += str(digits[count]) + " | "
 			for item in l:
@@ -59,14 +60,14 @@ class Board(object):
 			self.error = "Invalid Row"
 			return False
 		if value in [self.board[x][col] for x in range(BOARD_SIZE)]:
-			self.error = "InvalidColumn"
+			self.error = "Invalid Column"
 			return False
 		top = (row//3) * 3 # integer division of row//3, mult by 3 to find top row of minisquare (the 3x3 squares)
 		left = (col//3) * 3 # find furthest left, same deal
 		indices = [(r,c) for r in range(top,top+BOARD_N) for c in range(left,left+BOARD_N)]
 		vals = [self.board[r][c] for (r,c) in indices]
 		if value in vals:
-			self.error = "InvalidSquare"
+			self.error = "Invalid Square"
 			return False
 		if is_permanent(rowcol[0],rowcol[1], self): 
 			self.error = "Not alterable" 
@@ -100,7 +101,7 @@ class Board(object):
 		return True
 
 # solver fxns
-
+# (brute force solution)
 def solver(board): 
 	"""Returns True if solves board, else False"""
 	for c in range(BOARD_SIZE):
@@ -116,6 +117,20 @@ def solver(board):
 	print board
 	return nb
 
+def find_solution(board):
+	"""Same as solver, but returns the actual board instance that is solved"""
+	# for c in range(BOARD_SIZE):
+	# 	for r in range(BOARD_SIZE):
+	# 		assert bool(board.orig[r][c]) == bool(board.board[r][c]) 
+	# Asserts that every filled-in square is a permanent square
+	r, c = 0, 0
+	if board.check_win():
+		return True
+	while is_permanent(r, c, board):
+		r, c = get_next(r, c, board)
+	nb = solve(r,c,board)
+	return board
+	
 def solve(r,c, board):
 	for n in range(1,10):
 		if board.make_move(r,c,n):
@@ -153,15 +168,11 @@ def get_next(r,c,board):
 def test():
 	# creating/loading sudoku boards
 	newboard = Board("sudoku_board_1.txt") # to play
-	completeboard = Board("board_full.txt") # should be a winning board
+	completeboard = Board("board_full.txt") # is a winning board
 	print newboard
 	newboard.make_move(0,0,7)
 	print newboard
-	# newboard.undo()
-	# print newboard
-	# newboard.undo()
-	# print newboard
-	# newboard.undo()
+	# newboard.undo() ## testing undo
 	# print newboard
 	
 	## assertions
@@ -173,7 +184,7 @@ def test():
 	assert newboard.make_move(0,0,0)
 	assert not newboard.check_win()
 	assert completeboard.check_win()
-	
+	print "All tests pass."
 	
 
 
@@ -182,6 +193,5 @@ def test():
 if __name__ == "__main__":
 	
 	test()
-	
 	# testsolve = Board("sudoku_board_1.txt") 
 	# solver(testsolve)
