@@ -3,16 +3,16 @@
 
 ## Directions
 
-To run: with all files in the same directory, run sudoku_import_wrapper.py
+To run: with all files in the same directory, run ```sudoku_import_wrapper.py```
 Follow directions in command line interface.
 
 
-More boards to be added. Can play and solve any 9x9 Sudoku board.
+Can play and solve any 9x9 Sudoku board.
 
 
 
 ## Current Issues
 
 - commented in-files
-- issues to be updated 
+- issues with undoing in-play
 - README to be updated
